@@ -124,7 +124,7 @@ describe("ChristmasCardErc1155", function () {
       const role = ethers.utils.keccak256(
         ethers.utils.toUtf8Bytes("ADMIN_ROLE")
       );
-      console.log("admin role", role);
+
       expect(await fixture.contract.hasRole(role, fixture.admin.address)).to.be
         .true;
     });
@@ -133,7 +133,7 @@ describe("ChristmasCardErc1155", function () {
       const role = ethers.utils.keccak256(
         ethers.utils.toUtf8Bytes("MINTER_ROLE")
       );
-      console.log("minter role", role);
+
       expect(await fixture.contract.hasRole(role, fixture.admin.address)).to.be
         .true;
     });
