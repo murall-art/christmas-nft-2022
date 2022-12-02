@@ -14,11 +14,7 @@ import "@openzeppelin/contracts/utils/introspection/ERC165Checker.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./ERC1155WithTransferAmountTracking.sol";
 
-contract ChristmasCardErc1155 is
-    ERC1155WithTransferAmountTracking,
-    Ownable,
-    AccessControl
-{
+contract ChristmasCardErc1155 is ERC1155WithTransferAmountTracking, Ownable, AccessControl {
     bytes32 private constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
     bytes32 private constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
@@ -60,21 +56,13 @@ contract ChristmasCardErc1155 is
 
         // loop through and check if funding tokens are erc20 using erc165
         for (uint256 i = 0; i < _fundingTokens.length; ++i) {
-            if (_fundingTokens[i].supportsInterface(type(IERC20).interfaceId)) {
-                fundingTokens.push(_fundingTokens[i]);
-            }
+            fundingTokens.push(_fundingTokens[i]);
         }
     }
 
     function supportsInterface(
         bytes4 interfaceId
-    )
-        public
-        view
-        virtual
-        override(AccessControl, ERC1155WithTransferAmountTracking)
-        returns (bool)
-    {
+    ) public view virtual override(AccessControl, ERC1155WithTransferAmountTracking) returns (bool) {
         return
             interfaceId == type(IAccessControl).interfaceId ||
             interfaceId == type(IERC1155).interfaceId ||
@@ -86,27 +74,13 @@ contract ChristmasCardErc1155 is
         _mint(_to, _id, _amount, "");
     }
 
-    function mintBatch(
-        address _to,
-        uint256[] memory _ids,
-        uint256[] memory _amounts
-    ) public onlyMinter {
+    function mintBatch(address _to, uint256[] memory _ids, uint256[] memory _amounts) public onlyMinter {
         _mintBatch(_to, _ids, _amounts, "");
     }
 
-    function mintMultiple(
-        address[] memory _to,
-        uint256[] memory _ids,
-        uint256[] memory _amounts
-    ) public onlyMinter {
-        require(
-            _ids.length == _amounts.length,
-            "ERC1155: ids and amounts length mismatch"
-        );
-        require(
-            _to.length == _amounts.length,
-            "ERC1155: addresses and amounts length mismatch"
-        );
+    function mintMultiple(address[] memory _to, uint256[] memory _ids, uint256[] memory _amounts) public onlyMinter {
+        require(_ids.length == _amounts.length, "ERC1155: ids and amounts length mismatch");
+        require(_to.length == _amounts.length, "ERC1155: addresses and amounts length mismatch");
         for (uint256 i = 0; i < _ids.length; i++) {
             _mint(_to[i], _ids[i], _amounts[i], "");
         }
@@ -129,25 +103,19 @@ contract ChristmasCardErc1155 is
         donateErc20IfAllowed(msg.sender, dollarsToTransfer);
     }
 
-    function donateErc20IfAllowed(
-        address from,
-        uint256 amountInDollars
-    ) public {
+    function donateErc20IfAllowed(address from, uint256 amountInDollars) public {
         // loop through funding tokens and attempt to donate
 
         for (uint256 i = 0; i < fundingTokens.length; ++i) {
-            IERC20 token = IERC20(fundingTokens[i]);
+            IERC20Metadata token = IERC20Metadata(fundingTokens[i]);
             uint256 tokenDecimals = 18;
-            if (
-                fundingTokens[i].supportsInterface(
-                    type(IERC20Metadata).interfaceId
-                )
-            ) {
-                tokenDecimals = IERC20Metadata(fundingTokens[i]).decimals();
+            try token.decimals() returns (uint8 decimals) {
+                tokenDecimals = decimals;
+            } catch (bytes memory) {
+                // do nothing
             }
-            uint256 dollarAmountCorrectedToDp = amountInDollars.mul(
-                10 ** tokenDecimals
-            );
+
+            uint256 dollarAmountCorrectedToDp = amountInDollars.mul(10 ** tokenDecimals);
 
             // check allowance and if it is less than the amount to transfer, use the allowance
             uint256 allowance = token.allowance(from, address(this));
@@ -156,11 +124,7 @@ contract ChristmasCardErc1155 is
                     token.transferFrom(msg.sender, donationAddress, allowance);
                     break;
                 } else {
-                    token.transferFrom(
-                        msg.sender,
-                        donationAddress,
-                        dollarAmountCorrectedToDp
-                    );
+                    token.transferFrom(msg.sender, donationAddress, dollarAmountCorrectedToDp);
                     break;
                 }
             }
