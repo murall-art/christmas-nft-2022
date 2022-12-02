@@ -121,21 +121,21 @@ describe("ChristmasCardErc1155", function () {
     });
 
     it("Should set the admin", async function () {
-      expect(
-        await fixture.contract.hasRole(
-          ethers.utils.keccak256(ethers.utils.toUtf8Bytes("ADMIN_ROLE")),
-          fixture.admin.address
-        )
-      ).to.be.true;
+      const role = ethers.utils.keccak256(
+        ethers.utils.toUtf8Bytes("ADMIN_ROLE")
+      );
+      console.log("admin role", role);
+      expect(await fixture.contract.hasRole(role, fixture.admin.address)).to.be
+        .true;
     });
 
     it("Should set the minter role", async function () {
-      expect(
-        await fixture.contract.hasRole(
-          ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")),
-          fixture.admin.address
-        )
-      ).to.be.true;
+      const role = ethers.utils.keccak256(
+        ethers.utils.toUtf8Bytes("MINTER_ROLE")
+      );
+      console.log("minter role", role);
+      expect(await fixture.contract.hasRole(role, fixture.admin.address)).to.be
+        .true;
     });
   });
 

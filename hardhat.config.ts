@@ -13,13 +13,13 @@ if (PRIVATE_KEY) {
   nonDevelopmentNetworks = {
     mainnet: {
       gasPrice: 54000000000, // 54 gwei
-      url: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}/`,
+      url: `https://mainnet.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: [`${PRIVATE_KEY}`],
     },
     goerli: {
-      url: `https://goerli.infura.io/v3/${INFURA_PROJECT_ID}/`,
+      url: `https://goerli.infura.io/v3/${INFURA_PROJECT_ID}`,
       accounts: [`0x${PRIVATE_KEY}`],
-      gasPrice: 130000000000, // 13o gwei
+      // gasPrice: 130000000000, // 13o gwei
     },
     testnetbsc: {
       url: `https://data-seed-prebsc-1-s1.binance.org:8545/`,
