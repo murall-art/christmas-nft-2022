@@ -16,17 +16,20 @@ ETHERSCAN_KEY = **YOUR ETHERSCAN KEY HERE**
 npx hardhat test
 ```
 
-## Deploy test ERC20 contract (replace goerli with network of your choice from hardhat config)
+## Deploy test ERC20 contract
+replace goerli with network of your choice from hardhat config
 ```shell
 npx hardhat run --network goerli scripts/deploy_test_custom_token.ts
 ```
 
-## Deploy NFT contract (replace goerli with network of your choice from hardhat config)
+## Deploy NFT contract
+replace goerli with network of your choice from hardhat config
 ```shell
 npx hardhat run --network goerli scripts/deploy_christmas_cards.ts
 ```
 
-## Verify deployed contract (replace goerli with network of your choice, and edit `--constructor-args` if needed)
+## Verify deployed contract
+replace goerli with network of your choice, replace address with your deployed contract address and edit file passed into `--constructor-args` as needed
 ```shell
 npx hardhat verify --constructor-args argsForVerification/args_christmasNft.js --network goerli 0x8A3009ad2148DDc9d5124285092bEdCA7F5638CE
 ```
